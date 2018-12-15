@@ -2,8 +2,6 @@ language: python
 sudo: required
 dist: xenial
 python:
- - "2.7"
- - "3.4"
  - "3.5"
  - "3.6"
  - "3.7"
@@ -19,12 +17,6 @@ matrix:
   exclude:
     - python: "3.7"
       env: DJANGO="Django<2"
-    - python: "2.7"
-      env: DJANGO="Django<2.1"
-    - python: "2.7"
-      env: DJANGO="Django<2.2"
-    - python: "3.4"
-      env: DJANGO="Django<2.2"
 branches:
  only:
   - v1.0
