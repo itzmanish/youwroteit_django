@@ -1,0 +1,29 @@
+language: python
+sudo: required
+dist: xenial
+python:
+ - "3.5"
+ - "3.6"
+ - "3.7"
+env:
+  matrix:
+   - DJANGO="Django<2"
+   - DJANGO="Django<2.1"
+   - DJANGO="Django<2.2"
+install:
+ - pip install "$DJANGO" coverage coveralls "djangorestframework>=3.9" flake8
+ - pip install .
+matrix:
+  exclude:
+    - python: "3.7"
+      env: DJANGO="Django<2"
+branches:
+ only:
+  - v1.0
+before_script:
+  - "flake8 ."
+script:
+  - coverage run --source=drf_multiple_model manage.py test
+after_success:
+  - coverage report
+  - coveralls
