@@ -2,6 +2,15 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from django.utils import timezone
+from django.urls import reverse
+from taggit.managers import TaggableManager
+from ckeditor_uploader.fields import RichTextUploadingField
+
+
+class PublishedManager(models.Manager):
+    def get_queryset(self):
+        return super(PublishedManager, self).get_queryset()\
+            .filter(status='published')
 
 
 class Article(models.Model):
@@ -9,8 +18,9 @@ class Article(models.Model):
                       ('published', 'Published'),)
     title = models.CharField(max_length=666)
     slug = models.SlugField(unique=True)
-    content = models.TextField()
-    images = models.ImageField(upload_to='images/')
+    content = RichTextUploadingField()
+    image = models.ImageField(upload_to='images')
+    tags = TaggableManager(blank=True)
     category = models.ForeignKey(
         'Categories', null=True, related_name='article_category', on_delete=models.SET_NULL, blank=True)
     author = models.ForeignKey(
@@ -19,10 +29,12 @@ class Article(models.Model):
                               choices=STATUS_CHOICES,
                               default='draft')
     pub_date = models.DateField(default=timezone.now)
-    created_at = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, related_name='article_author_modifiers', null=True, blank=True)
+    objects = models.Manager()  # The default manager.
+    published = PublishedManager()  # Our custom manager.
 
     class Meta:
         ordering = ('-pub_date',)
@@ -47,6 +59,9 @@ class Article(models.Model):
             breadcrumb[i] = '/'.join(breadcrumb[-1:i-1:-1])
         return breadcrumb[-1:0:-1]
 
+    def get_absolute_url(self):
+        return reverse('blog:article_detail', kwargs={'slug': self.slug})
+
     def save(self, *args, **kwargs):
         # Newly created object, so set slug
         self.slug = slugify(self.title)
@@ -56,6 +71,8 @@ class Article(models.Model):
 class Categories(models.Model):
     category_name = models.CharField(max_length=100)
     category_slug = models.SlugField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     parent = models.ForeignKey(
         'self', blank=True, null=True, on_delete=models.SET_NULL, related_name='children')
 
@@ -74,3 +91,28 @@ class Categories(models.Model):
     def save(self, *args, **kwargs):
         self.category_slug = slugify(self.category_name)
         super(Categories, self).save(*args, **kwargs)
+
+
+class Subscribe(models.Model):
+    email_id = models.EmailField(null=True, blank=True)
+    timestamp = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.email_id
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(
+        'Article', on_delete=models.CASCADE, related_name='comments')
+    name = models.CharField(max_length=80)
+    email = models.EmailField()
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ('created',)
+
+    def __str__(self):
+        return 'Comment by {} on {}'.format(self.name, self.post)
