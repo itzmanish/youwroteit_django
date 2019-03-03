@@ -39,6 +39,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 INSTALLED_APPS = [
+    'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,23 +51,14 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'ckeditor',
     'ckeditor_uploader',
-    'easy_thumbnails',
-    'image_cropping',
     # django taggit
     'taggit',
-    # setting for all auth
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
+    'rest_framework',
+    'corsheaders',
 
 ]
-from easy_thumbnails.conf import Settings as thumbnail_settings
-THUMBNAIL_PROCESSORS = (
-    'image_cropping.thumbnail_processors.crop_corners',
-) + thumbnail_settings.THUMBNAIL_PROCESSORS
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -175,6 +167,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
@@ -183,7 +176,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MEDIA_URL = '/media/'
 
-LOGIN_REDIRECT_URL = "/dashboard/"
 
 MAILCHIMP_API_KEY = config('MAILCHIMP_API_KEY')
 MAILCHIMP_SUBSCRIBER_LIST_ID = config('MAILCHIMP_SUBSCRIBER_LIST_ID')
@@ -194,3 +186,14 @@ CKEDITOR_UPLOAD_PATH = "media/uploads/"
 
 #     }
 # }
+
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_REGEX_WHITELIST = (r'^(https?://)?(\w+\.)?google\.com$', ) #commented for now
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}

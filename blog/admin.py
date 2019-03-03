@@ -4,20 +4,22 @@ from .models import Article, Subscribe, Comment, Categories
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'slug', 'created_at', 'author', 'pub_date',
-                    'status')
-    list_filter = ('status', 'created_at', 'pub_date', 'author')
+    list_display = ('title', 'slug', 'created_at',  'pub_date',
+                    )
+    list_select_related = (
+        'category',
+    )
+    list_filter = ('created_at', 'pub_date',)
     search_fields = ('title', 'content')
     prepopulated_fields = {'slug': ('title',)}
-    raw_id_fields = ('author',)
     date_hierarchy = 'pub_date'
-    ordering = ('status', 'pub_date')
+    ordering = ('pub_date',)
 
-    def save_model(self, request, obj, form, change):
-        if not obj.author.id:
-            obj.author = request.user
-        obj.updated_by = request.user
-        super().save_model(request, obj, form, change)
+    # def save_model(self, request, obj, form, change):
+    #     if not obj.author.id:
+    #         obj.author = request.user
+    #     obj.updated_by = request.user
+    #     super().save_model(request, obj, form, change)
 
 
 @admin.register(Comment)

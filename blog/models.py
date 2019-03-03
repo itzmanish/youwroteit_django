@@ -14,25 +14,19 @@ class PublishedManager(models.Manager):
 
 
 class Article(models.Model):
-    STATUS_CHOICES = (('draft', 'Draft'),
-                      ('published', 'Published'),)
     title = models.CharField(max_length=666)
     slug = models.SlugField(unique=True)
     content = RichTextUploadingField()
     image = models.ImageField(upload_to='images')
-    tags = TaggableManager(blank=True)
     category = models.ForeignKey(
         'Categories', null=True, related_name='article_category', on_delete=models.SET_NULL, blank=True)
-    author = models.ForeignKey(
-        User, null=True, related_name='article_author', on_delete=models.SET_NULL, blank=True)
-    status = models.CharField(max_length=10,
-                              choices=STATUS_CHOICES,
-                              default='draft')
+    # author = models.ForeignKey(
+    # User, null=True, related_name='article_author', on_delete=models.SET_NULL, blank=True)
     pub_date = models.DateField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, related_name='article_author_modifiers', null=True, blank=True)
+    # updated_by = models.ForeignKey(
+    # User, on_delete=models.SET_NULL, related_name='article_author_modifiers', null=True, blank=True)
     objects = models.Manager()  # The default manager.
     published = PublishedManager()  # Our custom manager.
 
@@ -41,12 +35,6 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
-
-    def summary(self):
-        return self.content[:50] + "..."
-
-    def pretty_date(self):
-        return self.pub_date.strftime('%b %m %Y')
 
     def get_cat_list(self):  # for now ignore this instance method,
         k = self.category
