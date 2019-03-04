@@ -1,9 +1,20 @@
-import json
-from rest_framework.response import Response
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework import viewsets
 
 from blog.api.serializers import ArticleSerializer
 from .models import Article
+
+
+class ArticleViewSet(viewsets.ModelViewSet):
+    """
+    A viewset for viewing and editing user instances.
+    """
+    serializer_class = ArticleSerializer
+    queryset = Article.objects.all()
+    # Important trick this will give me url like url/slug instead of url/id
+    lookup_field = 'slug'
+    # extra_kwargs = {
+    #     'url': {'lookup_field': 'slug'}
+    # }
 
 
 # class ArticleView(APIView):
@@ -22,11 +33,36 @@ from .models import Article
 #         return Response({'success': 'Article {} created successfully'.format(article_saved.title)})
 
 
-class ArticleView(ListAPIView):
-    queryset = Article.objects.all()
-    serializer_class = ArticleSerializer
+# import json
+# from rest_framework.response import Response
+# from rest_framework.generics import (
+#     ListAPIView,
+#     RetrieveAPIView,
+#     CreateAPIView,
+#     UpdateAPIView,
+#     DestroyAPIView
+# )
+
+# class ArticleView(ListAPIView):
+#     queryset = Article.objects.all()
+#     serializer_class = ArticleSerializer
 
 
-class ArticleDetailView(RetrieveAPIView):
-    queryset = Article.objects.all()
-    serializer_class = ArticleSerializer
+# class ArticleDetailView(RetrieveAPIView):
+#     queryset = Article.objects.all()
+#     serializer_class = ArticleSerializer
+
+
+# class ArticleCreateView(CreateAPIView):
+#     queryset = Article.objects.all()
+#     serializer_class = ArticleSerializer
+
+
+# class ArticleUpdateView(UpdateAPIView):
+#     queryset = Article.objects.all()
+#     serializer_class = ArticleSerializer
+
+
+# class ArticleDeleteView(DestroyAPIView):
+#     queryset = Article.objects.all()
+#     serializer_class = ArticleSerializer
