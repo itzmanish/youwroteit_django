@@ -46,26 +46,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.twitter',
     'blog',
-    'widget_tweaks',
-    'debug_toolbar',
     'ckeditor',
     'ckeditor_uploader',
     'corsheaders',
-    # django taggit
-    'taggit',
-    'rest_auth',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'rest_auth.registration',
+    'rest_framework'
 ]
 
-SITE_ID = 1
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -191,11 +178,13 @@ MAILCHIMP_API_KEY = config('MAILCHIMP_API_KEY')
 MAILCHIMP_SUBSCRIBER_LIST_ID = config('MAILCHIMP_SUBSCRIBER_LIST_ID')
 
 CKEDITOR_UPLOAD_PATH = "media/uploads/"
-# CKEDITOR_CONFIG = {
-#     default: {
 
-#     }
-# }
+CKEDITOR_CONFIGS = {
+    'default': {
+        'skin': 'office2013',
+        'toolbar': 'full'
+    },
+}
 
 CORS_ORIGIN_ALLOW_ALL = True
 # CORS_ORIGIN_REGEX_WHITELIST = (r'^(https?://)?(\w+\.)?google\.com$', ) #commented for now
@@ -208,8 +197,3 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ]
 }
-
-# All aluth config
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_AUTHENTICATION_METHOD = 'username'
-ACCOUNT_EMAIL_REQUIRED = False

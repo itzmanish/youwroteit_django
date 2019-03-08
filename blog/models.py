@@ -3,30 +3,32 @@ from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.urls import reverse
-from taggit.managers import TaggableManager
 from ckeditor_uploader.fields import RichTextUploadingField
 
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
-        return super(PublishedManager, self).get_queryset()\
-            .filter(status='published')
+        return super(PublishedManager, self).get_queryset().filter(status='published')
 
 
 class Article(models.Model):
+    STATUS = (('Published', 'published'),
+              ('Draft', 'draft'))
     title = models.CharField(max_length=666)
     slug = models.SlugField(unique=True)
     content = RichTextUploadingField()
     image = models.ImageField(upload_to='images')
     category = models.ForeignKey(
         'Categories', null=True, related_name='article_category', on_delete=models.SET_NULL, blank=True)
-    # author = models.ForeignKey(
-    # User, null=True, related_name='article_author', on_delete=models.SET_NULL, blank=True)
-    pub_date = models.DateField(default=timezone.now)
+    author = models.ForeignKey(
+        User, null=True, related_name='article_author', on_delete=models.SET_NULL, blank=True)
+    pub_date = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # updated_by = models.ForeignKey(
-    # User, on_delete=models.SET_NULL, related_name='article_author_modifiers', null=True, blank=True)
+    updated_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, related_name='article_author_modifiers', null=True, blank=True)
+    status = models.CharField(choices=STATUS, default='Draft', max_length=20)
+
     objects = models.Manager()  # The default manager.
     published = PublishedManager()  # Our custom manager.
 
@@ -81,26 +83,26 @@ class Categories(models.Model):
         super(Categories, self).save(*args, **kwargs)
 
 
-class Subscribe(models.Model):
-    email_id = models.EmailField(null=True, blank=True)
-    timestamp = models.DateTimeField(default=timezone.now)
+# class Subscribe(models.Model):
+#     email_id = models.EmailField(null=True, blank=True)
+#     timestamp = models.DateTimeField(default=timezone.now)
 
-    def __str__(self):
-        return self.email_id
+#     def __str__(self):
+#         return self.email_id
 
 
-class Comment(models.Model):
-    post = models.ForeignKey(
-        'Article', on_delete=models.CASCADE, related_name='comments')
-    name = models.CharField(max_length=80)
-    email = models.EmailField()
-    body = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-    active = models.BooleanField(default=True)
+# class Comment(models.Model):
+#     post = models.ForeignKey(
+#         'Article', on_delete=models.CASCADE, related_name='comments')
+#     name = models.CharField(max_length=80)
+#     email = models.EmailField()
+#     body = models.TextField()
+#     created = models.DateTimeField(auto_now_add=True)
+#     updated = models.DateTimeField(auto_now=True)
+#     active = models.BooleanField(default=True)
 
-    class Meta:
-        ordering = ('created',)
+#     class Meta:
+#         ordering = ('created',)
 
-    def __str__(self):
-        return 'Comment by {} on {}'.format(self.name, self.post)
+#     def __str__(self):
+#         return 'Comment by {} on {}'.format(self.name, self.post)
