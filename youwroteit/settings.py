@@ -46,17 +46,27 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.twitter',
     'blog',
     'widget_tweaks',
     'debug_toolbar',
     'ckeditor',
     'ckeditor_uploader',
+    'corsheaders',
     # django taggit
     'taggit',
+    'rest_auth',
     'rest_framework',
-    'corsheaders',
-
+    'rest_framework.authtoken',
+    'rest_auth.registration',
 ]
+
+SITE_ID = 1
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -198,3 +208,8 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ]
 }
+
+# All aluth config
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_EMAIL_REQUIRED = False
