@@ -18,8 +18,7 @@ class Article(models.Model):
     slug = models.SlugField(unique=True)
     content = RichTextUploadingField()
     image = models.ImageField(upload_to='images')
-    category = models.ForeignKey(
-        'Categories', null=True, related_name='article_category', on_delete=models.SET_NULL, blank=True)
+    category = models.TextField()
     author = models.ForeignKey(
         User, null=True, related_name='article_author', on_delete=models.SET_NULL, blank=True)
     pub_date = models.DateTimeField(default=timezone.now)
@@ -58,29 +57,29 @@ class Article(models.Model):
         super(Article, self,).save(*args, **kwargs)
 
 
-class Categories(models.Model):
-    category_name = models.CharField(max_length=100)
-    category_slug = models.SlugField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    parent = models.ForeignKey(
-        'self', blank=True, null=True, on_delete=models.SET_NULL, related_name='children')
+# class Categories(models.Model):
+#     category_name = models.CharField(max_length=100)
+#     category_slug = models.SlugField()
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+#     parent = models.ForeignKey(
+#         'self', blank=True, null=True, on_delete=models.SET_NULL, related_name='children')
 
-    def __str__(self):
-        # post.  use __unicode__ in place of
-        full_path = [self.category_name]
-        # __str__ if you are using python 2
-        k = self.parent
+#     def __str__(self):
+#         # post.  use __unicode__ in place of
+#         full_path = [self.category_name]
+#         # __str__ if you are using python 2
+#         k = self.parent
 
-        while k is not None:
-            full_path.append(k.category_name)
-            k = k.parent
+#         while k is not None:
+#             full_path.append(k.category_name)
+#             k = k.parent
 
-        return ' -> '.join(full_path[::-1])
+#         return ' -> '.join(full_path[::-1])
 
-    def save(self, *args, **kwargs):
-        self.category_slug = slugify(self.category_name)
-        super(Categories, self).save(*args, **kwargs)
+#     def save(self, *args, **kwargs):
+#         self.category_slug = slugify(self.category_name)
+#         super(Categories, self).save(*args, **kwargs)
 
 
 # class Subscribe(models.Model):

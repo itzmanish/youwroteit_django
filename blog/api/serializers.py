@@ -6,7 +6,6 @@ from datetime import datetime
 class ArticleSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')
     updated_by = serializers.ReadOnlyField(source='updated_by.username')
-    category = serializers.ReadOnlyField(source='category.category_name')
 
     class Meta:
         model = Article

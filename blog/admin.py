@@ -1,14 +1,12 @@
 from django.contrib import admin
-from .models import Article, Categories
+from .models import Article
 
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
     list_display = ('title', 'slug', 'created_at', 'author', 'status', 'pub_date',
                     )
-    list_select_related = (
-        'category',
-    )
+
     list_filter = ('created_at', 'pub_date',)
     search_fields = ('title', 'content', 'author')
     prepopulated_fields = {'slug': ('title',)}
@@ -32,14 +30,14 @@ class ArticleAdmin(admin.ModelAdmin):
 #     ordering = ('active', 'updated')
 
 
-@admin.register(Categories)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('category_name', 'category_slug', 'created_at',)
-    list_filter = ('category_name',)
-    prepopulated_fields = {'category_slug': ('category_name',)}
-    search_fields = ('category_name',)
-    date_hierarchy = 'updated_at'
-    ordering = ('updated_at',)
+# @admin.register(Categories)
+# class CategoryAdmin(admin.ModelAdmin):
+#     list_display = ('category_name', 'category_slug', 'created_at',)
+#     list_filter = ('category_name',)
+#     prepopulated_fields = {'category_slug': ('category_name',)}
+#     search_fields = ('category_name',)
+#     date_hierarchy = 'updated_at'
+#     ordering = ('updated_at',)
 
 
 # admin.site.register(Subscribe)
