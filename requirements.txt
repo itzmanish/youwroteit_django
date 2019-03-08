@@ -2,7 +2,6 @@ Django==2.1.2
 django-ckeditor==5.6.1
 django-cors-headers==2.4.1
 djangorestframework==3.9.1
-Pillow==3.4.2
 psycopg2==2.7.5
 flake8
 coverage
