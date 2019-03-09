@@ -14,8 +14,8 @@ class PublishedManager(models.Manager):
 class Article(models.Model):
     STATUS = (('Published', 'published'),
               ('Draft', 'draft'))
-    title = models.CharField(max_length=666)
-    slug = models.SlugField(unique=True)
+    title = models.CharField(max_length=500)
+    slug = models.SlugField(unique=True, max_length=500)
     content = RichTextUploadingField()
     image = models.ImageField(upload_to='images')
     category = models.TextField()
